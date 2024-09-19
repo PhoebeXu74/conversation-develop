@@ -90,6 +90,8 @@ Immediately begin asking the user the following questions
 
 Also, after asking each question and getting a response, check if there's anything else the user want to add to the first question response. For instance, after getting a response to "What did you eat today?", your next question should be, "Did you eat anything else today?".  If they respond in the negative, move on to the next question.
 
+Make sure to only return exactly one followup question.
+
 Here is the current user statement:
   ${currentStatement}
 
@@ -108,6 +110,8 @@ export async function haveConversation(statement: string,
 }> {
   let questionForUser = await getNextQuestion(statement,  previousStatements);
   const measurements = await text2measurements(statement, utcDateTime, timeZoneOffset);
+  console.log(questionForUser);
+
   return {
     questionForUser,
     measurements
