@@ -10,7 +10,7 @@ import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognitio
 import Lottie from "lottie-react";
 import loadingAnimation from "@/animations/loading.json";
 import List from "@/components/list/List";
-import { useSpeechSynthesis } from 'react-speech-kit';
+import { useSpeechSynthesis } from '@types/react-speech-kit';
 
 
 function isNumber(numStr: string) {
@@ -172,7 +172,7 @@ export default function Home() {
         {
           !ifThinking && 
           <div className={"pt-12 font-extrabold text-8xl pb-8"}>
-            <h2>WHERE TO EXPLORE</h2>
+            <h2>Voice 2 Measurements</h2>
           </div>
         }
         
@@ -182,8 +182,7 @@ export default function Home() {
         !ifStarted ? <>
           <div className={"text-lg px-10"}>
             <div>
-              Use your voice to converse in this GPT-powered app to get suggestions on places to go in the country you wish to visit.
-              Simply tap on the button below to start the conversation.
+              Use your voice to converse in this GPT-powered app to get lifestyle and health suggestions! 
             </div>
           </div>
             <div className="px-10 pt-12">
