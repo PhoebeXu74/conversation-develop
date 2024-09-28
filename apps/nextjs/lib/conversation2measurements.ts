@@ -49,7 +49,9 @@ Your responses should be in JSON format and have 2 properties called data and me
 ${previousStatements ? `The following are the previous statements:
 ${previousStatements}` : ''}
 
+
 // Use the current local datetime ${localDateTime} to determine startDateLocal. If specified, also determine startTimeLocal, endDateLocal, and endTimeLocal or just leave them null.\`\`\`
+If there is no time or date in user's answer, output local datetime.
 The following is a user request:
 """
 ${statement}
@@ -90,7 +92,7 @@ Immediately begin asking the user the following questions
 
 Also, after asking each question and getting a response, check if there's anything else the user want to add to the first question response. For instance, after getting a response to "What did you eat today?", your next question should be, "Did you eat anything else today?".  If they respond in the negative, move on to the next question.
 
-Make sure to only return exactly one followup question.
+Make sure to only return exactly one followup question as plain text.
 
 Here is the current user statement:
   ${currentStatement}

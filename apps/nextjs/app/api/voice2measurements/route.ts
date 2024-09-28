@@ -6,7 +6,7 @@ import { text2measurements } from '@/lib/text2measurements';
 export async function POST(request: NextRequest) {
   let { statement, utcDateTime, timeZoneOffset, text } = await request.json();
   if(!statement){statement = text;}
-  const previousStatements = ""; //TODO: replace previous statements properly
+   //TODO: replace previous statements properly
   try {
     //const measurements = await text2measurements(statement, utcDateTime, timeZoneOffset);
     //haveConversation

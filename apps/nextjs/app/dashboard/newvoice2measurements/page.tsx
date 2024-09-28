@@ -2,7 +2,7 @@
 import Button from "@/components/buttons/Button";
 import { SendQuery } from "@/core/services/GPTService";
 import useSharedStore from "@/core/store/SharedStore";
-import { Message, SuggestionItem } from "@/core/types/types";
+import { SuggestionItem } from "@/core/types/types";
 import { useCallback, useEffect, useState } from "react";
 import "regenerator-runtime/runtime";
 import { MdSettingsVoice,MdOutlineSettingsVoice } from "react-icons/md";
@@ -10,7 +10,13 @@ import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognitio
 import Lottie from "lottie-react";
 import loadingAnimation from "@/animations/loading.json";
 import List from "@/components/list/List";
-import { useSpeechSynthesis } from '@types/react-speech-kit';
+import { useSpeechSynthesis } from 'react-speech-kit';
+import { getTimeZoneOffset, getUtcDateTime } from '@/lib/dateTimeWithTimezone';
+
+import {Shell} from "@/components/layout/shell";
+import {DashboardHeader} from "@/components/pages/dashboard/dashboard-header";
+import {Icons} from "@/components/icons";
+
 
 
 function isNumber(numStr: string) {
@@ -31,14 +37,49 @@ export default function Home() {
     resetTranscript
   } = useSpeechRecognition();
 
+  type Message = {
+    type: 'user' | 'response' | 'loading';
+    text: string;
+  };
   const conversation: Message[] = useSharedStore((state) => state.conversation);
   const response: string = useSharedStore((state) => state.response);
   const suggestions: SuggestionItem[] = useSharedStore((state) => state.suggestions);
 
+  const [input, setInput] = useState<string>('');
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const sendMessage = async (input: string) => {
+    if (input.trim()) {
+      const response = await fetch('/api/voice2measurements', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          text: input,
+          timeZoneOffset: getTimeZoneOffset(),
+          utcDateTime: getUtcDateTime(),
+        }),
+      });
+      const data = await response.json();
+
+      //const parsedData = JSON.parse(data.question);
+
+      // Extract the question from the array
+      //const question = parsedData.questions[0].question;
+
+      console.log(data.question);
+      //console.log("PRINTING DATA",data.question);
+      speak({ text: data.question, voice: voices[0] });
+      setIfThinking(false);
+    }
+  };
+
   async function startConversation () {
-  
+
     if (!ifStarted) {
-      sendConversationToGPT(conversation,true);
+     //sendConversationToGPT(conversation,true);
       setIfStarted(true);
     }
   }
@@ -50,7 +91,7 @@ export default function Home() {
   }
 
   function processResponse(gptResponse: string): SuggestionItem[] {
-  
+
     // to get the list of suggestions returned (they are all separated by an \n)
     const suggestions: string[] = gptResponse.split("\n");
     const processed: SuggestionItem[] = [];
@@ -63,7 +104,7 @@ export default function Home() {
 
         //  here we are getting the 1st character of this string
         const firstChar: string = eachSuggestion[0];
-        
+
         //  we then check if the first character is a number
         if (isNumber(firstChar)) {
 
@@ -72,7 +113,7 @@ export default function Home() {
           if (eachSuggestion.indexOf(":") !== -1) { splitToken = ":"; }
           const splitSuggestion: string[] = eachSuggestion.split(splitToken);
           const placeNameWithNumber: string = splitSuggestion[0];
-          
+
           // we can get the place name from above.
           // but it could be followed by a . or a )
           let token: string = ".";
@@ -98,14 +139,14 @@ export default function Home() {
   }
 
   const sendConversationToGPT = useCallback(async (updatedConversations: Message[], ifStart: boolean) => {
-  
+
     const gptResponse: string = await SendQuery(updatedConversations);
     let displayText: string = gptResponse;
 
     displayText = formatPassage(gptResponse);
 
     useSharedStore.setState({ response: displayText });
-    
+
     // using text-to-speech to have the app speak out the response from GPT
     speak({ text: gptResponse, voice: voices[0] });
 
@@ -120,17 +161,19 @@ export default function Home() {
   },[speak, voices]);
 
   function startListening() {
-  
+
     SpeechRecognition.startListening({ continuous: false });
   }
 
   function stopListening() {
-  
+
    SpeechRecognition.stopListening();
   }
 
-  const continueConversation = useCallback((text: string) => {
-  
+  const continueConversation = useCallback(
+    (text: string) =>
+    {
+
     setIfThinking(true);
 
     useSharedStore.setState({ response: ""});
@@ -149,11 +192,12 @@ export default function Home() {
     useSharedStore.setState({ conversation: messages});
 
     //  and send the updated conversation to the GPT API service
-    sendConversationToGPT(messages, false);
+    //sendConversationToGPT(messages, false); //TODO: double check
+      sendMessage(text);
   },[conversation, resetTranscript, sendConversationToGPT]);
 
   useEffect(() => {
-    
+
     const timeOut = setTimeout(() => {
       if (transcript.length > 0) {
         continueConversation(transcript);
@@ -163,26 +207,26 @@ export default function Home() {
     return (()=>{
       clearTimeout(timeOut);
     })
-  
+
   }, [continueConversation, transcript]);
 
   return (
     <div className={"w-full"}>
       <div className={"w-3/4 max-w-screen-md pt-4 m-auto"}>
         {
-          !ifThinking && 
+          !ifThinking &&
           <div className={"pt-12 font-extrabold text-8xl pb-8"}>
             <h2>Voice 2 Measurements</h2>
           </div>
         }
-        
+
       </div>
-      
+
       {
         !ifStarted ? <>
           <div className={"text-lg px-10"}>
             <div>
-              Use your voice to converse in this GPT-powered app to get lifestyle and health suggestions! 
+              Use your voice to converse in this GPT-powered app to get lifestyle and health suggestions!
             </div>
           </div>
             <div className="px-10 pt-12">
@@ -201,13 +245,13 @@ export default function Home() {
             (!ifThinking && suggestions.length > 0) ?
             <>
               <List listItems={suggestions} />
-            </> 
+            </>
             :
             <div className="px-14" dangerouslySetInnerHTML={{ __html: response}} />
           }
           {
             (!ifThinking && suggestions.length == 0) &&
-            <button 
+            <button
               onMouseDown={startListening}
               onMouseUp={stopListening}
               className="absolute flex flex-row w-full pt-12 m-auto cursor-pointer px-14 bottom-30"
