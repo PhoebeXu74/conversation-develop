@@ -49,6 +49,7 @@ export default function Home() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  let previousStatements = "";
   const sendMessage = async (input: string) => {
     if (input.trim()) {
       const response = await fetch('/api/voice2measurements', {
@@ -60,6 +61,7 @@ export default function Home() {
           text: input,
           timeZoneOffset: getTimeZoneOffset(),
           utcDateTime: getUtcDateTime(),
+          previousStatements: previousStatements
         }),
       });
       const data = await response.json();
@@ -72,6 +74,9 @@ export default function Home() {
       console.log(data.question);
       //console.log("PRINTING DATA",data.question);
       speak({ text: data.question, voice: voices[0] });
+      previousStatements += input;
+      previousStatements += "\n";
+
       setIfThinking(false);
     }
   };

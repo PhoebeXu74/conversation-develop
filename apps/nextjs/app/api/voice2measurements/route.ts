@@ -4,7 +4,8 @@ import { haveConversation } from '@/lib/conversation2measurements';
 import { text2measurements } from '@/lib/text2measurements';
 
 export async function POST(request: NextRequest) {
-  let { statement, utcDateTime, timeZoneOffset, text } = await request.json();
+  let { statement, utcDateTime, timeZoneOffset, text, previousStatements } = await request.json();
+
   if(!statement){statement = text;}
    //TODO: replace previous statements properly
   try {

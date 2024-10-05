@@ -6,6 +6,7 @@ import {text2measurements} from "@/lib/text2measurements";
 // IMPORTANT! Set the runtime to edge
 export const runtime = 'edge';
 
+//TODO: add previousQuestions as argument as well
 export function conversation2MeasurementsPrompt(statement: string,
                                                 utcDateTime: string | null | undefined,
                                                 timeZoneOffset: number | null | undefined,
