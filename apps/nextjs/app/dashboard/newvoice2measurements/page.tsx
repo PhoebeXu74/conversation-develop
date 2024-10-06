@@ -49,8 +49,8 @@ export default function Home() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const previousStatements: string = useSharedStore((state) => state.previousStatements);
-  const previousQuestions: string = useSharedStore((state) => state.previousQuestions);
+  let previousStatements: string = useSharedStore((state) => state.previousStatements);
+  let previousQuestions: string = useSharedStore((state) => state.previousQuestions);
   const sendMessage = async (input: string) => {
     if (input.trim()) {
       const response = await fetch('/api/voice2measurements', {
