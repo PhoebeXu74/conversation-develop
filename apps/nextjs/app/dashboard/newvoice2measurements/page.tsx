@@ -53,12 +53,6 @@ export default function Home() {
   let previousQuestions: string = useSharedStore((state) => state.previousQuestions);
   
   const sendMessage = async (input: string) => {
-    if(!previousStatements){
-      useSharedStore.setState({ previousStatements: ""});
-    }
-    if(!previousQuestions){
-      useSharedStore.setState({ previousQuestions: ""});
-    }
     if (input.trim()) {
       const response = await fetch('/api/voice2measurements', {
         method: 'POST',
@@ -84,11 +78,17 @@ export default function Home() {
       //console.log("PRINTING DATA",data.question);
       speak({ text: data.question, voice: voices[0] });
       let ps = previousStatements
+      if(!previousStatements){
+        ps = "";
+      }
       ps += input;
       ps += "\n";
       useSharedStore.setState({ previousStatements: ps});
 
       let pq = previousQuestions
+      if(!previousQuestions){
+        pq = "";
+      }
       pq += data.question;
       pq += "\n";
       useSharedStore.setState({ previousQuestions: pq});
