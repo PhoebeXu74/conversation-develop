@@ -43,7 +43,7 @@ export async function textCompletion4oMini(promptText: string, returnType: "text
     messages: [
       {
         role: "system",
-        content: `You are a helpful assistant that translates user requests into JSON objects`
+        content: `You are a helpful assistant that has conversations with the user`
       },
       {
         role: "user", // user = the dFDA app
