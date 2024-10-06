@@ -76,11 +76,15 @@ export default function Home() {
       console.log(data.question);
       //console.log("PRINTING DATA",data.question);
       speak({ text: data.question, voice: voices[0] });
-      previousStatements += input;
-      previousStatements += "\n";
+      let ps = previousStatements
+      ps += input;
+      ps += "\n";
+      useSharedStore.setState({ previousStatements: ps});
 
-      previousQuestions += data.question;
-      previousQuestions += "\n";
+      let pq = previousQuestions
+      pq += input;
+      pq += "\n";
+      useSharedStore.setState({ previousQuestions: pq});
 
       setIfThinking(false);
     }
