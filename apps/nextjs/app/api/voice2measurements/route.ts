@@ -13,9 +13,10 @@ export async function POST(request: NextRequest) {
     //haveConversation
     //input: statement, utcDateTime, timeZoneOffset, previousStatements)
     //output: questionForUser, measurements
-    const { questionForUser, measurements } = await haveConversation(statement, utcDateTime, timeZoneOffset, previousStatements, previousQuestions);
-
-    return NextResponse.json({ success: true, measurements: measurements, question:questionForUser });
+    const { questionForUser } = await haveConversation(statement, utcDateTime, timeZoneOffset, previousStatements, previousQuestions);
+    const measurements = text2measurements(statement, utcDateTime, timeZoneOffset);
+    console.log(measurements)
+    return NextResponse.json({ success: true, question:questionForUser });
   } catch (error) {
     return handleError(error, "voice2measurements")
   }

@@ -111,14 +111,11 @@ export async function haveConversation(statement: string,
                                        previousStatements: string | null | undefined,
                                        previousQuestions: string | null | undefined): Promise<{
   questionForUser: string;
-  measurements: Measurement[]
 }> {
   let questionForUser = await getNextQuestion(statement,  previousStatements, previousQuestions);
-  const measurements = await text2measurements(statement, utcDateTime, timeZoneOffset);
   console.log(questionForUser);
 
   return {
     questionForUser,
-    measurements
   }
 }
