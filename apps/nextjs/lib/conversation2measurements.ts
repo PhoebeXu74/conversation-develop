@@ -81,7 +81,7 @@ export async function conversation2measurements(statement: string,
   return measurements;
 }
 
-export async function getNextQuestion(currentStatement: string, previousStatements: string | null | undefined): Promise<string> {
+export async function getNextQuestion(currentStatement: string, previousStatements: string | null | undefined, previousQuestions:string | null | undefined): Promise<string> {
   let promptText = `
   You are a robot designed to collect diet, treatment, and symptom data from the user.
 
@@ -99,6 +99,7 @@ Here is the current user statement:
   ${currentStatement}
 
   Here are the previous statements in the conversation: ${previousStatements}
+  These are the questions already asked, so don't ask these questions again: ${previousQuestions}
   `;
 
   return await textCompletion(promptText, "text");
@@ -107,11 +108,12 @@ Here is the current user statement:
 export async function haveConversation(statement: string,
                                        utcDateTime: string,
                                        timeZoneOffset: number,
-                                       previousStatements: string | null | undefined): Promise<{
+                                       previousStatements: string | null | undefined,
+                                       previousQuestions: string | null | undefined): Promise<{
   questionForUser: string;
   measurements: Measurement[]
 }> {
-  let questionForUser = await getNextQuestion(statement,  previousStatements);
+  let questionForUser = await getNextQuestion(statement,  previousStatements, previousQuestions);
   const measurements = await text2measurements(statement, utcDateTime, timeZoneOffset);
   console.log(questionForUser);
 

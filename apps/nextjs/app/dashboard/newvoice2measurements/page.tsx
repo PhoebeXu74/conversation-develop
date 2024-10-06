@@ -50,6 +50,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   let previousStatements = "";
+  let previousQuestions = "";
   const sendMessage = async (input: string) => {
     if (input.trim()) {
       const response = await fetch('/api/voice2measurements', {
@@ -61,7 +62,8 @@ export default function Home() {
           text: input,
           timeZoneOffset: getTimeZoneOffset(),
           utcDateTime: getUtcDateTime(),
-          previousStatements: previousStatements
+          previousStatements: previousStatements,
+          previousQuestions: previousQuestions
         }),
       });
       const data = await response.json();
@@ -76,6 +78,9 @@ export default function Home() {
       speak({ text: data.question, voice: voices[0] });
       previousStatements += input;
       previousStatements += "\n";
+
+      previousQuestions += data.question;
+      previousQuestions += "\n";
 
       setIfThinking(false);
     }

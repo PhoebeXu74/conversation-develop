@@ -4,7 +4,7 @@ import { haveConversation } from '@/lib/conversation2measurements';
 import { text2measurements } from '@/lib/text2measurements';
 
 export async function POST(request: NextRequest) {
-  let { statement, utcDateTime, timeZoneOffset, text, previousStatements } = await request.json();
+  let { statement, utcDateTime, timeZoneOffset, text, previousStatements, previousQuestions } = await request.json();
 
   if(!statement){statement = text;}
    //TODO: replace previous statements properly
@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
     //haveConversation
     //input: statement, utcDateTime, timeZoneOffset, previousStatements)
     //output: questionForUser, measurements
-    const { questionForUser, measurements } = await haveConversation(statement, utcDateTime, timeZoneOffset, previousStatements);
+    const { questionForUser, measurements } = await haveConversation(statement, utcDateTime, timeZoneOffset, previousStatements, previousQuestions);
 
     return NextResponse.json({ success: true, measurements: measurements, question:questionForUser });
   } catch (error) {
@@ -26,6 +26,7 @@ export async function GET(req: NextRequest) {
   const statement = urlParams.statement as string;
   const utcDateTime = urlParams.utcDateTime as string;
   const previousStatements = ""; //TODO: replace previous statements properly
+  const previousQuestions= "";
 
   let timeZoneOffset = 0;
   if(urlParams.timeZoneOffset){
@@ -35,7 +36,7 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const { questionForUser, measurements } = await haveConversation(statement, utcDateTime, timeZoneOffset, previousStatements);
+    const { questionForUser, measurements } = await haveConversation(statement, utcDateTime, timeZoneOffset, previousStatements, previousQuestions);
     return NextResponse.json({ success: true, measurements: measurements, question:questionForUser  });
   } catch (error) {
     return handleError(error, "voice2measurements");

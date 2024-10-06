@@ -5,8 +5,10 @@ export function getUtcDateTimeWithTimezone() {
 }
 
 export function convertToUTC(localDateTime: string, timezoneOffset: number) {
+  console.log("local date time being used "+ localDateTime);
   const localDate = new Date(localDateTime);
-  return new Date(localDate.getTime() - timezoneOffset * 60000).toISOString();
+  console.log("date being used "+ localDate);
+  return new Date(localDate.getTime() + timezoneOffset * 60000).toISOString();
 }
 
 export function throwErrorIfDateInFuture(utcDateTime: string) {
@@ -27,7 +29,6 @@ export function getTimeZoneOffset(){
 
 export function convertToLocalDateTime(utcDateTime: string | number | Date, timeZoneOffset: number){
   const utcDate = new Date(utcDateTime);
-  const localDate = new Date(utcDate.getTime() + timeZoneOffset * 60 * 60 * 1000);
+  const localDate = new Date(utcDate.getTime() - timeZoneOffset * 60 * 60 * 1000);
   return localDate.toISOString();
 }
-
