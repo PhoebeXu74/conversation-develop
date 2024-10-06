@@ -1,5 +1,5 @@
 import {Measurement} from "@/types/models/Measurement";
-import {textCompletion} from "@/lib/llm";
+import {textCompletion4oMini} from "@/lib/llm";
 import {convertToLocalDateTime, getUtcDateTime} from "@/lib/dateTimeWithTimezone";
 import {text2measurements} from "@/lib/text2measurements";
 
@@ -102,7 +102,7 @@ Here is the current user statement:
   These are the questions already asked, so don't ask these questions again: ${previousQuestions}
   `;
 
-  return await textCompletion(promptText, "text");
+  return await textCompletion4oMini(promptText, "text");
 }
 
 export async function haveConversation(statement: string,
