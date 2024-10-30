@@ -21,25 +21,3 @@ export async function POST(request: NextRequest) {
     return handleError(error, "voice2measurements")
   }
 }
-
-export async function GET(req: NextRequest) {
-  const urlParams = Object.fromEntries(new URL(req.url).searchParams);
-  const statement = urlParams.statement as string;
-  const utcDateTime = urlParams.utcDateTime as string;
-  const previousStatements = ""; //TODO: replace previous statements properly
-  const previousQuestions= "";
-
-  let timeZoneOffset = 0;
-  if(urlParams.timeZoneOffset){
-    timeZoneOffset = parseInt(urlParams.timeZoneOffset);
-  } else {
-    console.error("timeZoneOffset is not provided");
-  }
-
-  try {
-    const { questionForUser, measurements } = await haveConversation(statement, utcDateTime, timeZoneOffset, previousStatements, previousQuestions);
-    return NextResponse.json({ success: true, measurements: measurements, question:questionForUser  });
-  } catch (error) {
-    return handleError(error, "voice2measurements");
-  }
-}
