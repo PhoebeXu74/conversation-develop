@@ -29,6 +29,6 @@ export function getTimeZoneOffset(){
 
 export function convertToLocalDateTime(utcDateTime: string | number | Date, timeZoneOffset: number){
   const utcDate = new Date(utcDateTime);
-  const localDate = new Date(utcDate.getTime() - timeZoneOffset * 60 * 60 * 1000);
+  const localDate = new Date(utcDate.getTime() - timeZoneOffset * 60000);
   return localDate.toISOString();
 }

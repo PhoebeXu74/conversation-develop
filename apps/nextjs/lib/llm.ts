@@ -64,7 +64,8 @@ export async function textCompletion4oMini(promptText: string, returnType: "text
 export async function getDateTimeFromStatementInUserTimezone(statement: string,
                                                              utcDateTime: string,
                                                              timeZoneOffset: number): Promise<string> {
-  const localDateTime = convertToLocalDateTime(utcDateTime, timeZoneOffset);
+  const localDateTime = convertToLocalDateTime(utcDateTime, timeZoneOffset); //utcDateTime;
+  console.log("--------local datetime " + localDateTime);
   const promptText = `
         estimate the date and time of the user statement based on the user's current date and time ${localDateTime}
          and the following user statement:

@@ -191,7 +191,12 @@ export async function text2measurements(statement: string,
   const str = await textCompletion(promptText, "json_object");
   const localDateTime = await getDateTimeFromStatementInUserTimezone(statement,
     currentUtcDateTime, timeZoneOffset);
-  const utcDateTimeFromStatement = convertToUTC(localDateTime, timeZoneOffset);
+  console.log("--------------------------------------------");
+  console.log("current utc datetime " + currentUtcDateTime);
+  console.log("current local datetime " + localDateTime);
+  console.log("timezone offset " + timeZoneOffset);
+  const utcDateTimeFromStatement = convertToUTC(localDateTime, timeZoneOffset);//localDateTime;
+  console.log("--------------------------------------------");
   let json = JSON.parse(str);
   if(!Array.isArray(str)){json = [json];}
   const measurements: Measurement[] = [];
